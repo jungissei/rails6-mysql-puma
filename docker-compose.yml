@@ -1,0 +1,46 @@
+version: '3'
+services:
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOTPASSWORD}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - 3306:3306
+    command: mysqld --character-set-server=utf8mb4 --explicit_defaults_for_timestamp=true
+    volumes:
+      - mysql-data:/var/lib/mysql
+  web:
+    build: .
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -b '0.0.0.0'"
+    # command: bundle exec puma -C config/puma.rb
+    volumes:
+      - .:/myapp
+      # - /myapp/node_modules
+      # - public-data:/myapp/public
+      # - tmp-data:/myapp/tmp
+      # - log-data:/myapp/log
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_USERNAME: ${DB_ROOTUSER}
+      DB_PASSWORD: ${DB_ROOTPASSWORD}
+    depends_on:
+      - db
+    stdin_open: true
+    tty: true
+  nginx:
+    build: ./nginx
+    ports:
+      - 80:80
+    depends_on:
+      - web
+    # volumes:
+    #   - public-data:/myapp/public
+    #   - tmp-data:/myapp/tmp
+volumes:
+  mysql-data:
+    driver: local
+  public-data:
+  tmp-data:
+  log-data:
