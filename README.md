@@ -1,4 +1,4 @@
-Ruby on Rails6 / MySQL5.7 / puma / Dockerのアプリケーション開発雛形
+Ruby on Rails6 / MySQL5.7 / puma / Dockerのアプリケーション開発雛形
 
 ## Railsスケルトンアプリインストール
 
